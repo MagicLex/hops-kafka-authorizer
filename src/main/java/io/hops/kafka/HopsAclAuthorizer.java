@@ -129,11 +129,12 @@ public class HopsAclAuthorizer implements Authorizer {
           @Override
           public Pair<Integer, String> load(String principalName) throws SQLException {
             String[] principalNameSplit = principalName.split(Consts.PROJECT_USER_DELIMITER);
-            String projectName = principalNameSplit[0];
+            // The certificate CN is <project backing name>__<username>.
+            String backingName = principalNameSplit[0];
             String username = principalNameSplit[1];
-            LOGGER.info("Getting users project role. projectName: {}, username: {}",
-                projectName, username);
-            return dbConnection.getProjectRole(projectName, username);
+            LOGGER.info("Getting users project role. backingName: {}, username: {}",
+                backingName, username);
+            return dbConnection.getProjectRole(backingName, username);
           }
         });
     projectShare = CacheBuilder.newBuilder()
